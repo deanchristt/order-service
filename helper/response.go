@@ -9,7 +9,7 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
-type EmpytyObj struct{}
+type EmptyObj struct{}
 
 func BuildResponse(status bool, message string, data interface{}) Response {
 	res := Response{

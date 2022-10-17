@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/deanchristt/order-service/entity"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -24,6 +25,8 @@ func SetupDatabaseConnection() *gorm.DB {
 	if err != nil {
 		panic("Failed to connect database")
 	}
+
+	db.AutoMigrate(&entity.Customer{}, &entity.Product{})
 
 	return db
 
