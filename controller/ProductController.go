@@ -36,14 +36,12 @@ func (p *productController) getCustomerIdByToken(token string) string {
 }
 
 func (p productController) All(context *gin.Context) {
-	//TODO implement me
 	var products = p.productService.All()
 	res := helper.BuildResponse(true, "OK", products)
 	context.JSON(http.StatusOK, res)
 }
 
 func (p productController) FindById(context *gin.Context) {
-	//TODO implement me
 	id, err := strconv.ParseInt(context.Param("id"), 0, 0)
 	if err != nil {
 		res := helper.BuildErrorResponse("Param id was not found", err.Error(), helper.EmptyObj{})
@@ -62,7 +60,6 @@ func (p productController) FindById(context *gin.Context) {
 }
 
 func (p productController) Insert(context *gin.Context) {
-	//TODO implement me
 	var productCreatDto dto.ProductCreateDto
 	errDto := context.ShouldBind(&productCreatDto)
 	if errDto != nil {
@@ -71,9 +68,9 @@ func (p productController) Insert(context *gin.Context) {
 	} else {
 		authHeader := context.GetHeader("Authorization")
 		customerId := p.getCustomerIdByToken(authHeader)
-		convertCustomerId, err := strconv.ParseInt(customerId, 10, 64)
-		if err != nil {
-			productCreatDto.CustomerId = int(convertCustomerId)
+		convertCustomerId, err := strconv.Atoi(customerId)
+		if err == nil {
+			productCreatDto.CustomerId = convertCustomerId
 		}
 		result := p.productService.Insert(productCreatDto)
 		response := helper.BuildResponse(true, "OK", result)
@@ -82,7 +79,6 @@ func (p productController) Insert(context *gin.Context) {
 }
 
 func (p productController) Update(context *gin.Context) {
-	//TODO implement me
 	var productUpdateDto dto.ProductUpdateDto
 	errDto := context.ShouldBind(&productUpdateDto)
 	if errDto != nil {
@@ -97,10 +93,13 @@ func (p productController) Update(context *gin.Context) {
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	customerId := fmt.Sprintf("%v", claims["user_id"])
-	if p.productService.IsAllowedToEdit(customerId, productUpdateDto.ID) {
-		id, errID := strconv.ParseInt(customerId, 10, 64)
+	path := context.Param("id")
+	productId, _ := strconv.Atoi(path)
+	if p.productService.IsAllowedToEdit(customerId, productId) {
+		id, errID := strconv.Atoi(customerId)
 		if errID == nil {
-			productUpdateDto.CustomerId = int(id)
+			productUpdateDto.ID = productId
+			productUpdateDto.CustomerId = id
 		}
 		result := p.productService.Update(productUpdateDto)
 		response := helper.BuildResponse(true, "OK", result)

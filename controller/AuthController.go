@@ -16,7 +16,6 @@ type AuthController interface {
 }
 
 type authController struct {
-	//Input service in here
 	authService service.AuthService
 	jwtService  service.JwtService
 }
@@ -37,7 +36,7 @@ func (auth *authController) Login(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, response)
 		return
 	}
-	authResult := auth.authService.VerifiyCredential(loginDto.Email, loginDto.Password)
+	authResult := auth.authService.VerifyCredential(loginDto.Email, loginDto.Password)
 	if v, ok := authResult.(entity.Customer); ok {
 		convertId := strconv.FormatInt(int64(v.ID), 10)
 		generatedToken := auth.jwtService.GenerateToken(convertId)

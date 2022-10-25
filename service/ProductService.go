@@ -23,7 +23,6 @@ type productService struct {
 }
 
 func (p productService) Insert(dto dto.ProductCreateDto) entity.Product {
-	//TODO implement me
 	product := entity.Product{}
 	err := smapping.FillStruct(&product, smapping.MapFields(dto))
 	if err != nil {
@@ -34,7 +33,6 @@ func (p productService) Insert(dto dto.ProductCreateDto) entity.Product {
 }
 
 func (p productService) Update(dto dto.ProductUpdateDto) entity.Product {
-	//TODO implement me
 	product := entity.Product{}
 	err := smapping.FillStruct(&product, smapping.MapFields(dto))
 	if err != nil {
@@ -45,22 +43,18 @@ func (p productService) Update(dto dto.ProductUpdateDto) entity.Product {
 }
 
 func (p productService) Delete(product entity.Product) {
-	//TODO implement me
 	p.productRepository.DeleteProduct(product)
 }
 
 func (p productService) All() []entity.Product {
-	//TODO implement me
 	return p.productRepository.AllProduct()
 }
 
 func (p productService) FindById(productId int) entity.Product {
-	//TODO implement me
 	return p.productRepository.FindProductById(productId)
 }
 
 func (p productService) IsAllowedToEdit(customerId string, productId int) bool {
-	//TODO implement me
 	product := p.productRepository.FindProductById(productId)
 	id := fmt.Sprintf("%v", product.CustomerId)
 	return customerId == id

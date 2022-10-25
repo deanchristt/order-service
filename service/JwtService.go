@@ -41,10 +41,9 @@ func (j *jwtService) GenerateToken(UserId string) string {
 }
 
 func (j *jwtService) ValidateToken(token string) (*jwt.Token, error) {
-	//TODO implement me
 	return jwt.Parse(token, func(t_ *jwt.Token) (interface{}, error) {
-		if _, ok := t_.Method.(*jwt.SigningMethodHMAC); ok {
-			return nil, fmt.Errorf("Unexpected singning method %v", t_.Header["alg"])
+		if _, ok := t_.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method %v", t_.Header["alg"])
 		}
 		return []byte(j.secretKey), nil
 	})

@@ -10,7 +10,7 @@ import (
 )
 
 type AuthService interface {
-	VerifiyCredential(email string, password string) interface{}
+	VerifyCredential(email string, password string) interface{}
 	CreateCustomer(create dto.CustomerCreate) entity.Customer
 	FindByEmail(email string) entity.Customer
 	IsDuplicateEmail(email string) bool
@@ -20,9 +20,7 @@ type authService struct {
 	customerRepository repository.CustomerRepository
 }
 
-func (a authService) VerifiyCredential(email string, password string) interface{} {
-	//TODO implement me
-
+func (a authService) VerifyCredential(email string, password string) interface{} {
 	res := a.customerRepository.VerifyCredential(email)
 	if v, ok := res.(entity.Customer); ok {
 		comparedPassword := comparePassword(v.Password, []byte(password))
@@ -45,8 +43,6 @@ func comparePassword(hashedPwd string, plainPassword []byte) bool {
 }
 
 func (a authService) CreateCustomer(create dto.CustomerCreate) entity.Customer {
-	//TODO implement me
-
 	customerCreate := entity.Customer{}
 	err := smapping.FillStruct(&customerCreate, smapping.MapFields(&create))
 	if err != nil {
@@ -57,12 +53,10 @@ func (a authService) CreateCustomer(create dto.CustomerCreate) entity.Customer {
 }
 
 func (a authService) FindByEmail(email string) entity.Customer {
-	//TODO implement me
 	return a.customerRepository.FindByEmail(email)
 }
 
 func (a authService) IsDuplicateEmail(email string) bool {
-	//TODO implement me
 	res := a.customerRepository.IsDuplicateEmail(email)
 	return !(res.Error == nil)
 }

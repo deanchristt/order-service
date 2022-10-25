@@ -24,33 +24,28 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 }
 
 func (p productConnection) InsertProduct(product entity.Product) entity.Product {
-	//TODO implement me
-	p.connection.Save(product)
+	p.connection.Save(&product)
 	p.connection.Preload("Customer").Find(&product)
 	return product
 }
 
 func (p productConnection) UpdateProduct(product entity.Product) entity.Product {
-	//TODO implement me
-	p.connection.Save(product)
+	p.connection.Save(&product)
 	p.connection.Preload("Customer").Find(&product)
 	return product
 }
 
 func (p productConnection) DeleteProduct(product entity.Product) {
-	//TODO implement me
-	p.connection.Delete(product)
+	p.connection.Delete(&product)
 }
 
 func (p productConnection) AllProduct() []entity.Product {
-	//TODO implement me
 	var products []entity.Product
 	p.connection.Preload("Customer").Find(&products)
 	return products
 }
 
 func (p productConnection) FindProductById(productId int) entity.Product {
-	//TODO implement me
 	var product entity.Product
 	p.connection.Preload("Customer").Find(&product, productId)
 	return product
