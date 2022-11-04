@@ -42,14 +42,14 @@ func (p productController) All(context *gin.Context) {
 }
 
 func (p productController) FindById(context *gin.Context) {
-	id, err := strconv.ParseInt(context.Param("id"), 0, 0)
+	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
 		res := helper.BuildErrorResponse("Param id was not found", err.Error(), helper.EmptyObj{})
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
 
-	var product = p.productService.FindById(int(id))
+	var product = p.productService.FindById(id)
 	if (product == entity.Product{}) {
 		res := helper.BuildErrorResponse("Data not found", "No data with given id", helper.EmptyObj{})
 		context.JSON(http.StatusNotFound, res)
@@ -113,12 +113,12 @@ func (p productController) Update(context *gin.Context) {
 func (p productController) Delete(context *gin.Context) {
 	//TODO implement me
 	var product entity.Product
-	id, err := strconv.ParseInt(context.Param("id"), 0, 0)
+	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
 		response := helper.BuildErrorResponse("Failed tou get id", "No param id were found", helper.EmptyObj{})
 		context.JSON(http.StatusBadRequest, response)
 	}
-	product.ID = int(id)
+	product.ID = id
 	authHeader := context.GetHeader("Authorization")
 	token, errToken := p.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
