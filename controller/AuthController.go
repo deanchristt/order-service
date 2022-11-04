@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/deanchristt/order-service/dto"
 	"github.com/deanchristt/order-service/entity"
 	"github.com/deanchristt/order-service/helper"
@@ -56,7 +55,6 @@ func (auth *authController) Register(c *gin.Context) {
 	if errDto != nil {
 		response := helper.BuildErrorResponse("Failed to process request", errDto.Error(), helper.EmptyObj{})
 		c.AbortWithStatusJSON(http.StatusBadRequest, response)
-		fmt.Println("adwniwa")
 		return
 	}
 
