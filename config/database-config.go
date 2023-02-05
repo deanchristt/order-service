@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"os"
 )
 
@@ -21,13 +22,24 @@ func SetupDatabaseConnection() *gorm.DB {
 	dbPort := os.Getenv("DB_PORT")
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", dbHost, dbUser, dbPass, dbName, dbPort)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
+	})
 	if err != nil {
 		panic("Failed to connect database")
 	}
 
-	db.AutoMigrate(&entity.Customer{}, &entity.Product{})
-
+	db.AutoMigrate(
+		&entity.Customer{},
+		&entity.Seller{},
+		&entity.Product{},
+		&entity.Transaction{},
+		&entity.Payment{},
+		&entity.Order{},
+		&entity.OrderProduct{},
+	)
 	return db
 
 }
