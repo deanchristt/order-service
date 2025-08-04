@@ -9,8 +9,8 @@ type Transaction struct {
 	CreatedAt         time.Time `json:"createdAt"`
 	PaidAt            time.Time `json:"paidAt"`
 	UpdatedAt         time.Time `json:"updatedAt"`
-	CustomerId        int       `gorm:"not null"`
-	Customer          Customer  `gorm:"foreignkey:CustomerId" json:"customer"`
+	UserId            int       `gorm:"not null"`
+	User              User      `gorm:"foreignkey:UserId" json:"customer"`
 	Payment           []Payment `json:"payment"`
 	OrderId           int       `gorm:"ForeignKey:id;column:order_id"` //this foreignKey tag didn't works
 	Order             Order     `gorm:"foreignKey:OrderId" json:"order"`

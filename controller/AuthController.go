@@ -37,9 +37,9 @@ func (auth *authController) Login(c *gin.Context) {
 		return
 	}
 	authResult := auth.authService.VerifyCredential(loginDto.Email, loginDto.Password)
-	if v, ok := authResult.(entity.Customer); ok {
+	if v, ok := authResult.(entity.User); ok {
 		convertId := strconv.FormatInt(int64(v.ID), 10)
-		generatedToken := auth.jwtService.GenerateToken(convertId)
+		generatedToken := auth.jwtService.GenerateTokenUser(convertId)
 		v.Token = generatedToken
 		response := helper.BuildResponse(true, "OK!", v)
 		c.JSON(http.StatusOK, response)
@@ -50,7 +50,7 @@ func (auth *authController) Login(c *gin.Context) {
 }
 
 func (auth *authController) Register(c *gin.Context) {
-	var registerDto dto.CustomerCreate
+	var registerDto dto.UserCreate
 	errDto := c.ShouldBind(&registerDto)
 	if errDto != nil {
 		response := helper.BuildErrorResponse("Failed to process request", errDto.Error(), helper.EmptyObj{})
@@ -62,8 +62,8 @@ func (auth *authController) Register(c *gin.Context) {
 		response := helper.BuildErrorResponse("Failed to process request", "Duplicate email", helper.EmptyObj{})
 		c.JSON(http.StatusConflict, response)
 	} else {
-		createdCustomer := auth.authService.CreateCustomer(registerDto)
-		token := auth.jwtService.GenerateToken(strconv.FormatInt(int64(createdCustomer.ID), 10))
+		createdCustomer := auth.authService.CreateUser(registerDto)
+		token := auth.jwtService.GenerateTokenUser(strconv.FormatInt(int64(createdCustomer.ID), 10))
 		createdCustomer.Token = token
 		response := helper.BuildResponse(true, "OK!", createdCustomer)
 		c.JSON(http.StatusCreated, response)

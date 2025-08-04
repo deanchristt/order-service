@@ -32,8 +32,7 @@ func SetupDatabaseConnection() *gorm.DB {
 	}
 
 	db.AutoMigrate(
-		&entity.Customer{},
-		&entity.Seller{},
+		&entity.User{},
 		&entity.Product{},
 		&entity.Transaction{},
 		&entity.Payment{},

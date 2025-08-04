@@ -11,6 +11,6 @@ type Product struct {
 	Image3      string          `gorm:"type:varchar(255)" json:"image3"`
 	Price       decimal.Decimal `gorm:"type:decimal(19,2)" json:"price"`
 	Stock       int             `gorm:"type:numeric" json:"stock"`
-	SellerId    int             `gorm:"column:seller_id"`
-	Seller      Seller          `json:"seller"`
+	UserId      int             `gorm:"column:user_id"`
+	User        User            `json:"user"`
 }

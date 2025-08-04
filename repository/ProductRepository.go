@@ -10,7 +10,7 @@ type ProductRepository interface {
 	UpdateProduct(product entity.Product) entity.Product
 	DeleteProduct(product entity.Product)
 	AllProduct() []entity.Product
-	FindProductById(productId int) entity.Product
+	FindProductById(productId int) *entity.Product
 }
 
 type productConnection struct {
@@ -45,8 +45,13 @@ func (p productConnection) AllProduct() []entity.Product {
 	return products
 }
 
-func (p productConnection) FindProductById(productId int) entity.Product {
+func (p productConnection) FindProductById(productId int) *entity.Product {
 	var product entity.Product
-	p.connection.Preload("Customer").Find(&product, productId)
-	return product
+	result := p.connection.Preload("Customer").First(&product, productId)
+
+	if result.Error != nil || result.RowsAffected == 0 {
+		return nil
+	}
+
+	return &product
 }

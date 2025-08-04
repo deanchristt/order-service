@@ -11,18 +11,18 @@ import (
 
 type AuthService interface {
 	VerifyCredential(email string, password string) interface{}
-	CreateCustomer(create dto.CustomerCreate) entity.Customer
-	FindByEmail(email string) entity.Customer
+	CreateUser(create dto.UserCreate) entity.User
+	FindByEmail(email string) entity.User
 	IsDuplicateEmail(email string) bool
 }
 
 type authService struct {
-	customerRepository repository.CustomerRepository
+	userRepository repository.UserRepository
 }
 
 func (a authService) VerifyCredential(email string, password string) interface{} {
-	res := a.customerRepository.VerifyCredential(email)
-	if v, ok := res.(entity.Customer); ok {
+	res := a.userRepository.VerifyCredential(email)
+	if v, ok := res.(entity.User); ok {
 		comparedPassword := comparePassword(v.Password, []byte(password))
 		if v.Email == email && comparedPassword {
 			return res
@@ -42,27 +42,27 @@ func comparePassword(hashedPwd string, plainPassword []byte) bool {
 	return true
 }
 
-func (a authService) CreateCustomer(create dto.CustomerCreate) entity.Customer {
-	customerCreate := entity.Customer{}
-	err := smapping.FillStruct(&customerCreate, smapping.MapFields(&create))
+func (a authService) CreateUser(create dto.UserCreate) entity.User {
+	userCreate := entity.User{}
+	err := smapping.FillStruct(&userCreate, smapping.MapFields(&create))
 	if err != nil {
 		log.Fatalf("Field map %v", err)
 	}
-	res := a.customerRepository.InsertCustomer(customerCreate)
+	res := a.userRepository.InsertUser(userCreate)
 	return res
 }
 
-func (a authService) FindByEmail(email string) entity.Customer {
-	return a.customerRepository.FindByEmail(email)
+func (a authService) FindByEmail(email string) entity.User {
+	return a.userRepository.FindByEmail(email)
 }
 
 func (a authService) IsDuplicateEmail(email string) bool {
-	res := a.customerRepository.IsDuplicateEmail(email)
+	res := a.userRepository.IsDuplicateEmail(email)
 	return !(res.Error == nil)
 }
 
-func NewAuthService(customerRep repository.CustomerRepository) AuthService {
+func NewAuthService(userRep repository.UserRepository) AuthService {
 	return &authService{
-		customerRep,
+		userRep,
 	}
 }
