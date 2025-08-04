@@ -9,7 +9,7 @@ type Order struct {
 	Date         time.Time      `json:"date"`
 	ShippingDate time.Time      `json:"shippingDate"`
 	IsDelivered  bool           `gorm:"not null" json:"isDelivered"`
-	CustomerId   int            `gorm:"column:customer_id"`
-	Customer     Customer       `json:"customer"`
+	UserId       int            `gorm:"column:user_id"`
+	User         User           `json:"user"`
 	OrderProduct []OrderProduct `gorm:"many2many:order_product;"`
 }

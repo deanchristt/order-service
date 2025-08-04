@@ -1,6 +1,6 @@
 package entity
 
-type Customer struct {
+type User struct {
 	ID          int           `gorm:"primary_key:auto_increment" json:"id"`
 	FirstName   string        `gorm:"type:varchar(50)" json:"firstName"`
 	LastName    string        `gorm:"type:varchar(50)" json:"lastName"`
@@ -8,7 +8,8 @@ type Customer struct {
 	Password    string        `gorm:"->;<-;not null" json:"-"`
 	PhoneNumber string        `gorm:"type:varchar(20)" json:"phoneNumber"`
 	Address     string        `gorm:"type:varchar(255)" json:"address"`
+	Type        string        `gorm:"type:varchar(50)" json:"type"`
 	Token       string        `gorm:"-" json:"token,omitempty"`
-	Transaction []Transaction `gorm:"foreignKey:CustomerId" json:"transaction"`
-	Order       []Order       `gorm:"foreignKey:CustomerId" json:"order"`
+	Transaction []Transaction `gorm:"foreignKey:UserId" json:"transaction"`
+	Order       []Order       `gorm:"foreignKey:UserId" json:"order"`
 }

@@ -11,33 +11,33 @@ import (
 	"strconv"
 )
 
-type CustomerController interface {
+type UserController interface {
 	GetProfile(ctx *gin.Context)
 	UpdateProfile(ctx *gin.Context)
 }
 
-type customerController struct {
-	customerService service.CustomerService
-	jwtService      service.JwtService
+type userController struct {
+	userService service.UserService
+	jwtService  service.JwtService
 }
 
-func (c customerController) GetProfile(ctx *gin.Context) {
+func (c userController) GetProfile(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, err := c.jwtService.ValidateToken(authHeader)
 	if err != nil {
 		panic(err.Error())
 	}
 	claims := token.Claims.(jwt.MapClaims)
-	userId := fmt.Sprintf("%v", claims["user_id"])
-	customerId, _ := strconv.Atoi(userId)
-	user := c.customerService.GetProfile(customerId)
+	userIDStr := fmt.Sprintf("%v", claims["userId"])
+	userId, err := strconv.Atoi(userIDStr)
+	user := c.userService.GetProfile(userId)
 	res := helper.BuildResponse(true, "OK", user)
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (c customerController) UpdateProfile(ctx *gin.Context) {
-	var customerUpdateDto dto.CustomerUpdate
-	errDto := ctx.ShouldBind(&customerUpdateDto)
+func (c userController) UpdateProfile(ctx *gin.Context) {
+	var userUpdateDto dto.UserUpdate
+	errDto := ctx.ShouldBind(&userUpdateDto)
 	if errDto != nil {
 		res := helper.BuildErrorResponse("Failed to process request", errDto.Error(), helper.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
@@ -49,19 +49,19 @@ func (c customerController) UpdateProfile(ctx *gin.Context) {
 		panic(errToken.Error())
 	}
 	claims := token.Claims.(jwt.MapClaims)
-	id, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	id, err := strconv.Atoi(fmt.Sprintf("%v", claims["userId"]))
 	if err != nil {
 		panic(err.Error())
 	}
-	customerUpdateDto.ID = id
-	u := c.customerService.UpdateCustomer(customerUpdateDto)
+	userUpdateDto.ID = id
+	u := c.userService.UpdateUser(userUpdateDto)
 	res := helper.BuildResponse(true, "OK!", u)
 	ctx.JSON(http.StatusOK, res)
 }
 
-func NewCustomerController(service service.CustomerService, jwtService service.JwtService) CustomerController {
-	return &customerController{
-		customerService: service,
-		jwtService:      jwtService,
+func NewUserController(service service.UserService, jwtService service.JwtService) UserController {
+	return &userController{
+		userService: service,
+		jwtService:  jwtService,
 	}
 }

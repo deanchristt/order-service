@@ -8,12 +8,12 @@ import (
 )
 
 type JwtService interface {
-	GenerateToken(userId string) string
+	GenerateTokenUser(userId string) string
 	ValidateToken(token string) (*jwt.Token, error)
 }
 
-type jwtCustomClaim struct {
-	UserId string `json:"user_id"`
+type jwtUserClaim struct {
+	UserId string `json:"userId"`
 	jwt.StandardClaims
 }
 
@@ -22,10 +22,9 @@ type jwtService struct {
 	issuer    string
 }
 
-func (j *jwtService) GenerateToken(UserId string) string {
-	//TODO implement me
-	claims := &jwtCustomClaim{
-		UserId: UserId,
+func (j *jwtService) GenerateTokenUser(userId string) string {
+	claims := &jwtUserClaim{
+		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().AddDate(1, 0, 0).Unix(),
 			Issuer:    j.issuer,
@@ -52,14 +51,16 @@ func (j *jwtService) ValidateToken(token string) (*jwt.Token, error) {
 func NewJwtService() JwtService {
 	return &jwtService{
 		secretKey: getSecretKey(),
-		issuer:    "deanchristt",
+		issuer:    getIssuer(),
 	}
 }
 
 func getSecretKey() string {
 	secretKey := os.Getenv("JWT_SECRET")
-	if secretKey != "" {
-		secretKey = "deanchristt"
-	}
 	return secretKey
+}
+
+func getIssuer() string {
+	issuer := os.Getenv("JWT_ISSUER")
+	return issuer
 }
